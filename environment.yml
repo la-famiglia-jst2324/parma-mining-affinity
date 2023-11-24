@@ -12,6 +12,7 @@ dependencies:
   - setuptools >=61 # pyproject.toml support
   # Development
   - types-pyyaml
+  - requests
   # Testing
   - pytest >=6 # --import-mode option
   - pytest-cov
