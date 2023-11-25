@@ -3,14 +3,14 @@
 from fastapi import FastAPI
 from typing import List
 from parma_mining.affinity.model import OrganizationModel
-from ..client import AffinityClient
+from parma_mining.affinity.client import AffinityClient
 from dotenv import load_dotenv
 import os
 
 load_dotenv()
 
-base_url = os.getenv("AFFINITY_BASE_URL")
-api_key = os.getenv("AFFINITY_API_KEY")
+base_url = str(os.getenv("AFFINITY_BASE_URL") or "")
+api_key = str(os.getenv("AFFINITY_API_KEY") or "")
 
 app = FastAPI()
 
