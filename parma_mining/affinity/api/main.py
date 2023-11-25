@@ -1,6 +1,8 @@
 """Main entrypoint for the API routes in of parma-analytics."""
 
 from fastapi import FastAPI
+from typing import List
+from parma_mining.affinity.model import OrganizationModel
 from ..client import AffinityClient
 from dotenv import load_dotenv
 import os
@@ -21,7 +23,7 @@ def root():
 
 
 @app.get("/organizations", status_code=200)
-def get_all_organizations() -> dict:
+def get_all_organizations() -> List[OrganizationModel]:
     """Fetch all tracked companies from Affiniy CRM."""
 
     _affinityCrawler = AffinityClient(api_key, base_url)
