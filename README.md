@@ -54,7 +54,8 @@ The following steps will get you started with the project.
 
    **IMPORTANT NOTE**:
    Don't forget to add the environment variables for this repository.
-   Create a .env file in the main directory and add the secrets there. Necessary secrets/keys can be found in [Notion](https://www.notion.so/La-Famiglia-VC-86ebaf0018ca474c9478f848062191a4)
+   Create a .env file in the main directory and add the secrets there. Necessary secrets/keys can be found in [Notion](https://www.notion.so/La-Famiglia-VC-86ebaf0018ca474c9478f848062191a4).
+
    File (.env) should look like this :
 
    ```bash
