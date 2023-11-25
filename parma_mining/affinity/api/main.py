@@ -17,7 +17,7 @@ def root():
 
 
 @app.get("/organizations", status_code=200)
-def get_all_organizations():
+def get_all_organizations() -> dict:
     """Fetch all tracked companies from Affiniy CRM."""
 
     _affinityCrawler = AffinityClient(api_key, base_url)
