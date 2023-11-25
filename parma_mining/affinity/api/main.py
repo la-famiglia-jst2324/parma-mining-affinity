@@ -2,9 +2,13 @@
 
 from fastapi import FastAPI
 from ..client import AffinityClient
-from ..secrets import api_key
+from dotenv import load_dotenv
+import os
 
-base_url = "https://api.affinity.co"
+load_dotenv()
+
+base_url = os.getenv("AFFINITY_BASE_URL")
+api_key = os.getenv("AFFINITY_API_KEY")
 
 app = FastAPI()
 
