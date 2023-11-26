@@ -5,6 +5,7 @@ from typing import List
 from parma_mining.affinity.model import OrganizationModel
 from parma_mining.affinity.client import AffinityClient
 from dotenv import load_dotenv
+from starlette import status
 import os
 
 load_dotenv()
