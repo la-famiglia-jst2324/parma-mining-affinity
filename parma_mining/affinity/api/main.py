@@ -22,7 +22,7 @@ def root():
     return {"welcome": "at parma-mining-affinity"}
 
 
-@app.get("/organizations", status_code=200)
+@app.get("/organizations", status_code=status.HTTP_200_OK)
 def get_all_organizations() -> List[OrganizationModel]:
     """Fetch all tracked companies from Affiniy CRM."""
 
