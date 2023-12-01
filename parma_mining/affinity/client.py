@@ -1,8 +1,7 @@
 from typing import List
-import requests
-from requests.auth import HTTPBasicAuth
-from requests.models import Response
 from parma_mining.affinity.model import OrganizationModel
+import httpx
+from httpx import Response, BasicAuth
 
 
 class AffinityClient:
@@ -11,9 +10,9 @@ class AffinityClient:
         self.base_url = base_url
 
     def get(self, path: str, params: dict[str, str]) -> Response:
-        return requests.get(
+        return httpx.get(
             self.base_url + path,
-            auth=HTTPBasicAuth("", self.api_key),
+            auth=BasicAuth("", self.api_key),
             headers={"Content-Type": "application/json"},
             params=params,
         )
