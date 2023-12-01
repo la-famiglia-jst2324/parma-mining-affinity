@@ -1,11 +1,10 @@
 """Main entrypoint for the API routes in of parma-analytics."""
 
-from fastapi import FastAPI
+from fastapi import FastAPI, status
 from typing import List
 from parma_mining.affinity.model import OrganizationModel
 from parma_mining.affinity.client import AffinityClient
 from dotenv import load_dotenv
-from starlette import status
 import os
 
 load_dotenv()
@@ -17,7 +16,7 @@ app = FastAPI()
 
 
 # root endpoint
-@app.get("/", status_code=200)
+@app.get("/", status_code=status.HTTP_200_OK)
 def root():
     """Root endpoint for the API."""
     return {"welcome": "at parma-mining-affinity"}

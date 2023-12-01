@@ -2,7 +2,6 @@ from typing import List
 import requests
 from requests.auth import HTTPBasicAuth
 from requests.models import Response
-
 from parma_mining.affinity.model import OrganizationModel
 
 
