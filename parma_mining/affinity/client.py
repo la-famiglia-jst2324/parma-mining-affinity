@@ -2,6 +2,7 @@ from typing import List
 from parma_mining.affinity.model import OrganizationModel
 import httpx
 from httpx import Response, BasicAuth
+from urllib.parse import urljoin
 
 
 class AffinityClient:
@@ -10,8 +11,9 @@ class AffinityClient:
         self.base_url = base_url
 
     def get(self, path: str, params: dict[str, str]) -> Response:
+        full_path = urljoin(self.base_url, path)
         return httpx.get(
-            self.base_url + path,
+            url=full_path,
             auth=BasicAuth("", self.api_key),
             headers={"Content-Type": "application/json"},
             params=params,
