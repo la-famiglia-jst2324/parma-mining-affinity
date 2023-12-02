@@ -24,7 +24,7 @@ class AffinityClient:
         response = self.get(path).json()
         organizations = []
 
-        while response["next_page_token"]:
+        while True:
             for result in response["organizations"]:
                 parsed_organization = OrganizationModel.model_validate(
                     {
@@ -39,5 +39,8 @@ class AffinityClient:
             response = self.get(
                 path, params={"page_token": response["next_page_token"]}
             ).json()
+
+            if response["next_page_token"] == None:
+                break
 
         return organizations
