@@ -1,4 +1,4 @@
-from typing import List
+from typing import List, Optional
 from parma_mining.affinity.model import OrganizationModel
 import httpx
 from httpx import Response, BasicAuth
@@ -10,7 +10,7 @@ class AffinityClient:
         self.api_key = api_key
         self.base_url = base_url
 
-    def get(self, path: str, params: dict[str, str]) -> Response:
+    def get(self, path: str, params: Optional[dict[str, str]] = None) -> Response:
         full_path = urljoin(self.base_url, path)
         return httpx.get(
             url=full_path,
@@ -21,7 +21,7 @@ class AffinityClient:
 
     def collect_companies(self) -> List[OrganizationModel]:
         path = "/organizations"
-        response = self.get(path, {"": ""}).json()
+        response = self.get(path).json()
         organizations = []
 
         while response["next_page_token"]:
