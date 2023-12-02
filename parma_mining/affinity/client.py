@@ -36,11 +36,12 @@ class AffinityClient:
                     }
                 )
                 organizations.append(parsed_organization)
-            response = self.get(
-                path, params={"page_token": response["next_page_token"]}
-            ).json()
 
             if response["next_page_token"] == None:
                 break
+
+            response = self.get(
+                path, params={"page_token": response["next_page_token"]}
+            ).json()
 
         return organizations
