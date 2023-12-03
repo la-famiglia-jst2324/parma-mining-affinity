@@ -1,7 +1,7 @@
-from typing import List
-import requests
-from requests.auth import HTTPBasicAuth
-from requests.models import Response
+from urllib.parse import urljoin
+
+import httpx
+from httpx import BasicAuth, Response
 
 from parma_mining.affinity.model import OrganizationModel
 
@@ -11,29 +11,38 @@ class AffinityClient:
         self.api_key = api_key
         self.base_url = base_url
 
-    def get(self, path: str) -> Response:
-        return requests.get(
-            self.base_url + path,
-            auth=HTTPBasicAuth("", self.api_key),
+    def get(self, path: str, params: dict[str, str] | None = None) -> Response:
+        full_path = urljoin(self.base_url, path)
+        return httpx.get(
+            url=full_path,
+            auth=BasicAuth("", self.api_key),
             headers={"Content-Type": "application/json"},
+            params=params,
         )
 
-    def collect_companies(self) -> List[OrganizationModel]:
+    def collect_companies(self) -> list[OrganizationModel]:
         path = "/organizations"
-        response = self.get(path)
+        response = self.get(path).json()
         organizations = []
 
-        for result in response.json()["organizations"]:
-            parsed_organization = OrganizationModel.model_validate(
-                {
-                    "id": result["id"],
-                    "name": result["name"],
-                    "domain": result["domain"] or "",
-                    "domains": result["domains"],
-                    "crunchbase_uuid": result["crunchbase_uuid"] or "",
-                }
-            )
+        while True:
+            for result in response["organizations"]:
+                parsed_organization = OrganizationModel.model_validate(
+                    {
+                        "id": result["id"],
+                        "name": result["name"],
+                        "domain": result["domain"] or "",
+                        "domains": result["domains"],
+                        "crunchbase_uuid": result["crunchbase_uuid"] or "",
+                    }
+                )
+                organizations.append(parsed_organization)
 
-            organizations.append(parsed_organization)
+            if response["next_page_token"] is None:
+                break
+
+            response = self.get(
+                path, params={"page_token": response["next_page_token"]}
+            ).json()
 
         return organizations

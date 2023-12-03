@@ -1,5 +1,4 @@
 from pydantic import BaseModel
-from typing import List
 
 
 class OrganizationModel(BaseModel):
@@ -8,5 +7,5 @@ class OrganizationModel(BaseModel):
     id: int
     name: str
     domain: str
-    domains: List[str]
+    domains: list[str]
     crunchbase_uuid: str
