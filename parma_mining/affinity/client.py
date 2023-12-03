@@ -1,8 +1,9 @@
-from typing import List, Optional
-from parma_mining.affinity.model import OrganizationModel
-import httpx
-from httpx import Response, BasicAuth
 from urllib.parse import urljoin
+
+import httpx
+from httpx import BasicAuth, Response
+
+from parma_mining.affinity.model import OrganizationModel
 
 
 class AffinityClient:
@@ -10,7 +11,7 @@ class AffinityClient:
         self.api_key = api_key
         self.base_url = base_url
 
-    def get(self, path: str, params: Optional[dict[str, str]] = None) -> Response:
+    def get(self, path: str, params: dict[str, str] | None = None) -> Response:
         full_path = urljoin(self.base_url, path)
         return httpx.get(
             url=full_path,
@@ -19,7 +20,7 @@ class AffinityClient:
             params=params,
         )
 
-    def collect_companies(self) -> List[OrganizationModel]:
+    def collect_companies(self) -> list[OrganizationModel]:
         path = "/organizations"
         response = self.get(path).json()
         organizations = []
@@ -37,7 +38,7 @@ class AffinityClient:
                 )
                 organizations.append(parsed_organization)
 
-            if response["next_page_token"] == None:
+            if response["next_page_token"] is None:
                 break
 
             response = self.get(
