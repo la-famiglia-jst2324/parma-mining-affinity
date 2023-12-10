@@ -1,6 +1,7 @@
 """Main entrypoint for the API routes in of parma-analytics."""
 
 import os
+from typing import Any
 
 from dotenv import load_dotenv
 from fastapi import FastAPI, status
@@ -27,4 +28,12 @@ def root():
 def get_all_companies() -> list[OrganizationModel]:
     """Fetch all tracked companies from Affiniy CRM."""
     affinity_crawler = AffinityClient(api_key, base_url)
+    ## TODO: Send the response to analytics by endpoints
     return affinity_crawler.collect_companies()
+
+
+@app.get("/initialize", status_code=status.HTTP_200_OK)
+def initialize() -> dict[str, Any]:
+    affinity_crawler = AffinityClient(api_key, base_url)
+    ## TODO: Register measurements using analytics endpoints
+    return affinity_crawler.normalization_map
