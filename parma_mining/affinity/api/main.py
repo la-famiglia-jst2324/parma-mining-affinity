@@ -23,8 +23,8 @@ def root():
     return {"welcome": "at parma-mining-affinity"}
 
 
-@app.get("/organizations", status_code=status.HTTP_200_OK)
-def get_all_organizations() -> list[OrganizationModel]:
+@app.get("/companies", status_code=status.HTTP_200_OK)
+def get_all_companies() -> list[OrganizationModel]:
     """Fetch all tracked companies from Affiniy CRM."""
     affinity_crawler = AffinityClient(api_key, base_url)
     return affinity_crawler.collect_companies()

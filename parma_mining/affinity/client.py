@@ -27,15 +27,7 @@ class AffinityClient:
 
         while True:
             for result in response["organizations"]:
-                parsed_organization = OrganizationModel.model_validate(
-                    {
-                        "id": result["id"],
-                        "name": result["name"],
-                        "domain": result["domain"] or "",
-                        "domains": result["domains"],
-                        "crunchbase_uuid": result["crunchbase_uuid"] or "",
-                    }
-                )
+                parsed_organization = OrganizationModel.model_validate(result)
                 organizations.append(parsed_organization)
 
             if response["next_page_token"] is None:

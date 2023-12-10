@@ -18,15 +18,14 @@ def mock_affinity_client(mocker) -> MagicMock:
             "name": "testname",
             "domain": "testdomain",
             "domains": ["testdomains1", "testdomains2"],
-            "crunchbase_uuid": "testcrunchbase_uuid",
         }
     ]
 
     return mock
 
 
-def test_get_all_organizations(mock_affinity_client: MagicMock):
-    response = client.get("/organizations")
+def test_get_all_get_all_companies(mock_affinity_client: MagicMock):
+    response = client.get("/companies")
 
     assert response.status_code == 200
     assert response.json() == [
@@ -35,6 +34,5 @@ def test_get_all_organizations(mock_affinity_client: MagicMock):
             "name": "testname",
             "domain": "testdomain",
             "domains": ["testdomains1", "testdomains2"],
-            "crunchbase_uuid": "testcrunchbase_uuid",
         }
     ]
