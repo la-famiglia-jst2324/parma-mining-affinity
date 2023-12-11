@@ -24,7 +24,7 @@ def mock_affinity_client(mocker) -> MagicMock:
     return mock
 
 
-def test_get_all_get_all_companies(mock_affinity_client: MagicMock):
+def test_get_all_companies(mock_affinity_client: MagicMock):
     response = client.get("/companies")
 
     assert response.status_code == 200
