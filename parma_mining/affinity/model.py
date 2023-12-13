@@ -1,11 +1,30 @@
+from typing import Optional
 from pydantic import BaseModel
+import json
 
 
 class OrganizationModel(BaseModel):
     """Base model for organization entity."""
 
     id: int
-    name: str
-    domain: str
-    domains: list[str]
-    crunchbase_uuid: str
+    name: Optional[str]
+    domain: Optional[str]
+    domains: Optional[list[str]]
+
+
+class AffinityListModel(BaseModel):
+    """Base model for Affinity list entity."""
+
+    id: int
+    type: Optional[int]
+    name: Optional[str]
+    public: Optional[bool]
+    owner_id: Optional[int]
+    creator_id: Optional[int]
+    list_size: Optional[int]
+
+
+class ResponseModel(BaseModel):
+    source_name: str
+    company_id: str
+    raw_data: OrganizationModel

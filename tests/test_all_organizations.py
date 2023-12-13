@@ -10,7 +10,7 @@ client = TestClient(app)
 @pytest.fixture
 def mock_affinity_client(mocker) -> MagicMock:
     mock = mocker.patch(
-        "parma_mining.affinity.api.main.AffinityClient.collect_companies"
+        "parma_mining.affinity.api.main.AffinityClient.get_all_companies"
     )
     mock.return_value = [
         {
@@ -18,15 +18,22 @@ def mock_affinity_client(mocker) -> MagicMock:
             "name": "testname",
             "domain": "testdomain",
             "domains": ["testdomains1", "testdomains2"],
-            "crunchbase_uuid": "testcrunchbase_uuid",
         }
     ]
 
     return mock
 
 
-def test_get_all_organizations(mock_affinity_client: MagicMock):
-    response = client.get("/organizations")
+@pytest.fixture
+def mock_analytics_client(mocker) -> MagicMock:
+    """Mocking the AnalyticsClient's method to avoid actual API calls during testing."""
+    mock = mocker.patch("parma_mining.affinity.api.main.AnalyticsClient.feed_raw_data")
+    # No return value needed, but you can add side effects or exceptions if necessary
+    return mock
+
+
+def test_get_all_companies(mock_affinity_client: MagicMock):
+    response = client.get("/all-companies")
 
     assert response.status_code == 200
     assert response.json() == [
@@ -35,6 +42,17 @@ def test_get_all_organizations(mock_affinity_client: MagicMock):
             "name": "testname",
             "domain": "testdomain",
             "domains": ["testdomains1", "testdomains2"],
-            "crunchbase_uuid": "testcrunchbase_uuid",
         }
     ]
+
+
+"""
+def test_get_companies(
+    mock_affinity_client: MagicMock, mock_analytics_client: MagicMock
+):
+    response = client.get("/companies")
+
+    mock_analytics_client.assert_called()
+
+    assert response.status_code == 200
+"""
