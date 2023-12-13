@@ -10,7 +10,7 @@ client = TestClient(app)
 @pytest.fixture
 def mock_affinity_client(mocker) -> MagicMock:
     mock = mocker.patch(
-        "parma_mining.affinity.api.main.AffinityClient.collect_companies"
+        "parma_mining.affinity.api.main.AffinityClient.get_all_companies"
     )
     mock.return_value = [
         {
@@ -25,7 +25,7 @@ def mock_affinity_client(mocker) -> MagicMock:
 
 
 def test_get_all_companies(mock_affinity_client: MagicMock):
-    response = client.get("/companies")
+    response = client.get("/all-companies")
 
     assert response.status_code == 200
     assert response.json() == [
