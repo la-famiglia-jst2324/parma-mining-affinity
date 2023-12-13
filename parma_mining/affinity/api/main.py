@@ -34,7 +34,6 @@ def root():
 def get_all_companies() -> list[OrganizationModel]:
     """Fetch all companies from Affiniy CRM."""
     affinity_crawler = AffinityClient(api_key, base_url)
-    ## TODO: Send the response to analytics by endpoints
     return affinity_crawler.get_all_companies()
 
 
