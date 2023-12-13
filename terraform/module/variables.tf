@@ -29,3 +29,8 @@ variable "AFFINITY_BASE_URL" {
   description = "value"
   type        = string
 }
+
+variable "ANALYTICS_BASE_URL" {
+  description = "value"
+  type        = string
+}
