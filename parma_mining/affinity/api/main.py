@@ -24,12 +24,29 @@ def root():
     return {"welcome": "at parma-mining-affinity"}
 
 
-@app.get("/companies", status_code=status.HTTP_200_OK)
+@app.get("/all-companies", status_code=status.HTTP_200_OK)
 def get_all_companies() -> list[OrganizationModel]:
-    """Fetch all tracked companies from Affiniy CRM."""
+    """Fetch all companies from Affiniy CRM."""
     affinity_crawler = AffinityClient(api_key, base_url)
     ## TODO: Send the response to analytics by endpoints
-    return affinity_crawler.collect_companies()
+    return affinity_crawler.get_all_companies()
+
+
+@app.get("/companies", status_code=status.HTTP_200_OK)
+def get_companies() -> list[OrganizationModel]:
+    """Fetch companies in the list from Affinity CRM.
+
+    Currently (12/13/2023) fetch from Dealflow list, in future make list name a query
+    parameter
+    """
+    affinity_crawler = AffinityClient(api_key, base_url)
+
+    lists = affinity_crawler.get_all_lists()
+    [dealflow] = [
+        x for x in lists if x.name == "Dealflow"
+    ]  # TODO: Make the list name a query parameter after midterm
+
+    return affinity_crawler.get_companies_by_list(dealflow.id)
 
 
 @app.get("/initialize", status_code=status.HTTP_200_OK)

@@ -4,7 +4,7 @@ from urllib.parse import urljoin
 import httpx
 from httpx import BasicAuth, Response
 
-from parma_mining.affinity.model import OrganizationModel
+from parma_mining.affinity.model import AffinityListModel, OrganizationModel
 from parma_mining.affinity.normalization_map import AffinityNormalizationMap
 
 
@@ -23,7 +23,7 @@ class AffinityClient:
             params=params,
         )
 
-    def collect_companies(self) -> list[OrganizationModel]:
+    def get_all_companies(self) -> list[OrganizationModel]:
         path = "/organizations"
         response = self.get(path).json()
         organizations = []
@@ -39,5 +39,28 @@ class AffinityClient:
             response = self.get(
                 path, params={"page_token": response["next_page_token"]}
             ).json()
+
+        return organizations
+
+    def get_all_lists(self) -> list[AffinityListModel]:
+        path = "/lists"
+        response = self.get(path).json()
+        lists = []
+
+        for result in response:
+            parsed_list = AffinityListModel.model_validate(result)
+            lists.append(parsed_list)
+
+        return lists
+
+    def get_companies_by_list(self, list_id: int) -> list[OrganizationModel]:
+        path = f"/lists/{list_id}/list-entries"
+        response = self.get(path).json()
+
+        organizations = []
+
+        for result in response:
+            parsed_organization = OrganizationModel.model_validate(result["entity"])
+            organizations.append(parsed_organization)
 
         return organizations
