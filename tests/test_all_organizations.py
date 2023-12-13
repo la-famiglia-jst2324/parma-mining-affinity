@@ -32,16 +32,6 @@ def mock_analytics_client(mocker) -> MagicMock:
     return mock
 
 
-def test_get_companies(
-    mock_affinity_client: MagicMock, mock_analytics_client: MagicMock
-):
-    response = client.get("/companies")
-
-    mock_analytics_client.assert_called()
-
-    assert response.status_code == 200
-
-
 def test_get_all_companies(mock_affinity_client: MagicMock):
     response = client.get("/all-companies")
 
@@ -54,3 +44,13 @@ def test_get_all_companies(mock_affinity_client: MagicMock):
             "domains": ["testdomains1", "testdomains2"],
         }
     ]
+
+
+def test_get_companies(
+    mock_affinity_client: MagicMock, mock_analytics_client: MagicMock
+):
+    response = client.get("/companies")
+
+    mock_analytics_client.assert_called()
+
+    assert response.status_code == 200
