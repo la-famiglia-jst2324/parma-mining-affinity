@@ -1,5 +1,6 @@
 from typing import Optional
 from pydantic import BaseModel
+import json
 
 
 class OrganizationModel(BaseModel):
@@ -21,3 +22,9 @@ class AffinityListModel(BaseModel):
     owner_id: Optional[int]
     creator_id: Optional[int]
     list_size: Optional[int]
+
+
+class ResponseModel(BaseModel):
+    source_name: str
+    company_id: str
+    raw_data: OrganizationModel

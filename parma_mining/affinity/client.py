@@ -5,14 +5,12 @@ import httpx
 from httpx import BasicAuth, Response
 
 from parma_mining.affinity.model import AffinityListModel, OrganizationModel
-from parma_mining.affinity.normalization_map import AffinityNormalizationMap
 
 
 class AffinityClient:
     def __init__(self, api_key: str, base_url: str):
         self.api_key = api_key
         self.base_url = base_url
-        self.normalization_map = AffinityNormalizationMap().get_normalization_map()
 
     def get(self, path: str, params: dict[str, str] | None = None) -> Response:
         full_path = urljoin(self.base_url, path)
