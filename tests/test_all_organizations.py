@@ -24,6 +24,24 @@ def mock_affinity_client(mocker) -> MagicMock:
     return mock
 
 
+@pytest.fixture
+def mock_analytics_client(mocker) -> MagicMock:
+    """Mocking the AnalyticsClient's method to avoid actual API calls during testing."""
+    mock = mocker.patch("parma_mining.affinity.api.main.AnalyticsClient.feed_raw_data")
+    # No return value needed, but you can add side effects or exceptions if necessary
+    return mock
+
+
+def test_get_companies(
+    mock_affinity_client: MagicMock, mock_analytics_client: MagicMock
+):
+    response = client.get("/companies")
+
+    mock_analytics_client.assert_called()
+
+    assert response.status_code == 200
+
+
 def test_get_all_companies(mock_affinity_client: MagicMock):
     response = client.get("/all-companies")
 
