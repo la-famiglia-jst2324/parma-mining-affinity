@@ -1,8 +1,10 @@
-import pytest
 from unittest.mock import MagicMock
 
+import pytest
 from fastapi.testclient import TestClient
+
 from parma_mining.affinity.api.main import app
+from parma_mining.mining_common.const import HTTP_200
 
 client = TestClient(app)
 
@@ -35,7 +37,7 @@ def mock_analytics_client(mocker) -> MagicMock:
 def test_get_all_companies(mock_affinity_client: MagicMock):
     response = client.get("/all-companies")
 
-    assert response.status_code == 200
+    assert response.status_code == HTTP_200
     assert response.json() == [
         {
             "id": 1,

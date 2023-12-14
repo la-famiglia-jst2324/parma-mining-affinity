@@ -2,7 +2,6 @@
 
 import json
 import os
-from typing import Any
 
 from dotenv import load_dotenv
 from fastapi import FastAPI, status
@@ -58,7 +57,7 @@ def get_companies() -> list[OrganizationModel]:
         )
         try:
             analytics_client.feed_raw_data(data)
-        except:
+        except Exception:
             raise Exception("Can't send crawling data to the Analytics.")
 
     return response
@@ -66,8 +65,8 @@ def get_companies() -> list[OrganizationModel]:
 
 @app.get("/initialize", status_code=status.HTTP_200_OK)
 def initialize(source_id: int) -> str:
-    affinity_crawler = AffinityClient(api_key, base_url)
     ## TODO: Register measurements using analytics endpoints
+    ##  affinity_crawler = AffinityClient(api_key, base_url)
 
     # init frequency
     time = "daily"
