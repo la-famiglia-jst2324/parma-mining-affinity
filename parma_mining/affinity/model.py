@@ -1,27 +1,25 @@
-from typing import Optional
 from pydantic import BaseModel
-import json
 
 
 class OrganizationModel(BaseModel):
     """Base model for organization entity."""
 
     id: int
-    name: Optional[str]
-    domain: Optional[str]
-    domains: Optional[list[str]]
+    name: str | None
+    domain: str | None
+    domains: list[str] | None
 
 
 class AffinityListModel(BaseModel):
     """Base model for Affinity list entity."""
 
     id: int
-    type: Optional[int]
-    name: Optional[str]
-    public: Optional[bool]
-    owner_id: Optional[int]
-    creator_id: Optional[int]
-    list_size: Optional[int]
+    type: int | None
+    name: str | None
+    public: bool | None
+    owner_id: int | None
+    creator_id: int | None
+    list_size: int | None
 
 
 class ResponseModel(BaseModel):

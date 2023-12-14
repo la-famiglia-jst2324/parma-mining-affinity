@@ -1,8 +1,9 @@
 import json
-from dotenv import load_dotenv
-import urllib.parse
-import httpx
 import os
+import urllib.parse
+
+import httpx
+from dotenv import load_dotenv
 
 from parma_mining.affinity.model import ResponseModel
 
@@ -26,7 +27,8 @@ class AnalyticsClient:
             return response.json()
         else:
             raise Exception(
-                f"API request failed with status code {response.status_code}, response: {response.text}"
+                f"API request failed with status code {response.status_code},"
+                f"response: {response.text}"
             )
 
     def register_measurements(self, mapping, parent_id=None, source_module_id=None):
