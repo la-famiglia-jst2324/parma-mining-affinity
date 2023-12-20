@@ -22,7 +22,6 @@ normalization = AffinityNormalizationMap()
 app = FastAPI()
 
 
-# root endpoint
 @app.get("/", status_code=status.HTTP_200_OK)
 def root():
     """Root endpoint for the API."""
@@ -65,6 +64,7 @@ def get_companies() -> list[OrganizationModel]:
 
 @app.get("/initialize", status_code=status.HTTP_200_OK)
 def initialize(source_id: int) -> str:
+    """Initialize the Affinity CRM source."""
     ## TODO: Register measurements using analytics endpoints
     ##  affinity_crawler = AffinityClient(api_key, base_url)
 
