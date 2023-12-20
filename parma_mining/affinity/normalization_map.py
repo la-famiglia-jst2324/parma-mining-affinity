@@ -1,4 +1,9 @@
+"""Normalization map for affinity data."""
+
+
 class AffinityNormalizationMap:
+    """Normalization map for affinity data."""
+
     map_json = {
         "Source": "Affinity",
         "Mappings": [
@@ -26,4 +31,5 @@ class AffinityNormalizationMap:
     }
 
     def get_normalization_map(self):
+        """Return the normalization map."""
         return self.map_json

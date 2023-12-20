@@ -1,3 +1,4 @@
+"""Pydantic models for affinity list entity."""
 from pydantic import BaseModel
 
 
@@ -23,6 +24,8 @@ class AffinityListModel(BaseModel):
 
 
 class ResponseModel(BaseModel):
+    """Base model for response."""
+
     source_name: str
     company_id: str
     raw_data: OrganizationModel
