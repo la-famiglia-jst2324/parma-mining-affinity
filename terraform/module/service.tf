@@ -36,10 +36,6 @@ resource "google_cloud_run_service" "parma_mining_affinity_cloud_run" {
           container_port = 8080
         }
         env {
-          name  = "FIREBASE_ADMINSDK_CERTIFICATE"
-          value = var.FIREBASE_ADMINSDK_CERTIFICATE
-        }
-        env {
           name  = "AFFINITY_API_KEY"
           value = var.AFFINITY_API_KEY
         }

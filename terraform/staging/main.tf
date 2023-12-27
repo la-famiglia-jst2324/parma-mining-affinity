@@ -33,7 +33,6 @@ module "main" {
   env              = "staging"
   project          = local.project
   region           = local.region
-  FIREBASE_ADMINSDK_CERTIFICATE = var.FIREBASE_ADMINSDK_CERTIFICATE
   AFFINITY_API_KEY = var.AFFINITY_API_KEY
   AFFINITY_BASE_URL = var.AFFINITY_BASE_URL
   ANALYTICS_BASE_URL = var.ANALYTICS_BASE_URL
