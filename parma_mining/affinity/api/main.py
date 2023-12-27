@@ -1,6 +1,7 @@
 """Main entrypoint for the API routes in of parma-analytics."""
 
 import json
+import logging
 import os
 
 from dotenv import load_dotenv
@@ -10,6 +11,10 @@ from parma_mining.affinity.client import AffinityClient
 from parma_mining.affinity.model import OrganizationModel, ResponseModel
 from parma_mining.affinity.normalization_map import AffinityNormalizationMap
 from parma_mining.analytics_client import AnalyticsClient
+
+logging.basicConfig(level=logging.INFO)
+
+logger = logging.getLogger(__name__)
 
 load_dotenv()
 
@@ -25,6 +30,7 @@ app = FastAPI()
 @app.get("/", status_code=status.HTTP_200_OK)
 def root():
     """Root endpoint for the API."""
+    logger.debug("Root endpoint called")
     return {"welcome": "at parma-mining-affinity"}
 
 
@@ -57,6 +63,7 @@ def get_companies() -> list[OrganizationModel]:
         try:
             analytics_client.feed_raw_data(data)
         except Exception:
+            logger.error("Can't send crawling data to the Analytics.")
             raise Exception("Can't send crawling data to the Analytics.")
 
     return response
