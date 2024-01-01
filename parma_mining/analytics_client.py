@@ -55,10 +55,13 @@ class AnalyticsClient:
                 "type": field_mapping["DataType"],
                 "measurement_name": field_mapping["MeasurementName"],
             }
-
             if parent_id is not None:
                 measurement_data["parent_measurement_id"] = parent_id
-
+            else:
+                logger.debug(
+                    f"No parent id provided for "
+                    f"measurement {measurement_data['measurement_name']}"
+                )
             measurement_data["source_measurement_id"] = self.send_post_request(
                 self.measurement_url, measurement_data
             ).get("id")
