@@ -22,7 +22,7 @@ class AnalyticsClient:
 
     analytics_base = str(os.getenv("ANALYTICS_BASE_URL") or "")
 
-    measurement_url = urllib.parse.urljoin(analytics_base, "/source-measurements")
+    measurement_url = urllib.parse.urljoin(analytics_base, "/source-measurement")
     feed_raw_url = urllib.parse.urljoin(analytics_base, "/feed-raw-data")
 
     def send_post_request(self, api_endpoint, data):
