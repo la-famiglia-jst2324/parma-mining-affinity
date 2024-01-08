@@ -47,6 +47,10 @@ resource "google_cloud_run_service" "parma_mining_affinity_cloud_run" {
           name  = "ANALYTICS_BASE_URL"
           value = var.ANALYTICS_BASE_URL
         }
+        env {
+          name  = "SHARED_SECRET_KEY"
+          value = var.SHARED_SECRET_KEY
+        }
       }
     }
   }

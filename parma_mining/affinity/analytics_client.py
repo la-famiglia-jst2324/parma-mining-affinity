@@ -25,10 +25,11 @@ class AnalyticsClient:
     measurement_url = urllib.parse.urljoin(analytics_base, "/source-measurement")
     feed_raw_url = urllib.parse.urljoin(analytics_base, "/feed-raw-data")
 
-    def send_post_request(self, api_endpoint, data):
+    def send_post_request(self, token: str, api_endpoint, data):
         """Send a POST request to the Analytics API."""
         headers = {
             "Content-Type": "application/json",
+            "Authorization": f"Bearer {token}",
         }
 
         response = httpx.post(api_endpoint, json=data, headers=headers)
@@ -45,7 +46,9 @@ class AnalyticsClient:
                 f"response: {response.text}"
             )
 
-    def register_measurements(self, mapping, parent_id=None, source_module_id=None):
+    def register_measurements(
+        self, token: str, mapping, parent_id=None, source_module_id=None
+    ):
         """Register measurements in the Analytics API."""
         result = []
 
@@ -63,7 +66,7 @@ class AnalyticsClient:
                     f"measurement {measurement_data['measurement_name']}"
                 )
             measurement_data["source_measurement_id"] = self.send_post_request(
-                self.measurement_url, measurement_data
+                token, self.measurement_url, measurement_data
             ).get("id")
 
             # add the source measurement id to mapping
@@ -73,6 +76,7 @@ class AnalyticsClient:
 
             if "NestedMappings" in field_mapping:
                 nested_measurements = self.register_measurements(
+                    token,
                     {"Mappings": field_mapping["NestedMappings"]},
                     parent_id=measurement_data["source_measurement_id"],
                     source_module_id=source_module_id,
@@ -81,7 +85,7 @@ class AnalyticsClient:
             result.append(measurement_data)
         return result, mapping
 
-    def feed_raw_data(self, input_data: ResponseModel):
+    def feed_raw_data(self, token: str, input_data: ResponseModel):
         """Feed raw data to the Analytics API."""
         organization_json = json.loads(input_data.raw_data.model_dump_json())
 
@@ -91,4 +95,4 @@ class AnalyticsClient:
             "raw_data": organization_json,
         }
 
-        return self.send_post_request(self.feed_raw_url, data)
+        return self.send_post_request(token, self.feed_raw_url, data)
