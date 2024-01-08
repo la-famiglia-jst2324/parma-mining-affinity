@@ -20,7 +20,7 @@ env:
   TF_VAR_AFFINITY_BASE_URL: ${{ vars.AFFINITY_BASE_URL }}
 
   # Analytics and Sourcing (AS) Auth Flow
-  TF_VAR_SHARED_SECRET_KEY: ${{ github.event_name == 'release' && secrets.PROD_AS_SHARED_SECRET_KEY || secrets.STAGING_AS_SHARED_SECRET_KEY}}
+  TF_VAR_PARMA_SHARED_SECRET_KEY: ${{ github.event_name == 'release' && secrets.PROD_PARMA_SHARED_SECRET_KEY || secrets.STAGING_PARMA_SHARED_SECRET_KEY}}
 
 jobs:
   deploy:
