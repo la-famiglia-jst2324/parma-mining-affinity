@@ -1,12 +1,27 @@
+import logging
 from unittest.mock import MagicMock
 
 import pytest
 from fastapi.testclient import TestClient
 
+from parma_mining.affinity.api.dependencies.auth import authenticate
 from parma_mining.affinity.api.main import app
 from parma_mining.mining_common.const import HTTP_200
+from tests.dependencies.mock_auth import mock_authenticate
 
-client = TestClient(app)
+
+@pytest.fixture
+def client():
+    assert app
+    app.dependency_overrides.update(
+        {
+            authenticate: mock_authenticate,
+        }
+    )
+    return TestClient(app)
+
+
+logger = logging.getLogger(__name__)
 
 
 @pytest.fixture
@@ -34,7 +49,7 @@ def mock_analytics_client(mocker) -> MagicMock:
     return mock
 
 
-def test_get_all_companies(mock_affinity_client: MagicMock):
+def test_get_all_companies(client: TestClient, mock_affinity_client: MagicMock):
     response = client.get("/all-companies")
 
     assert response.status_code == HTTP_200
