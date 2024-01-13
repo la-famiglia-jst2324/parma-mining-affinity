@@ -5,8 +5,10 @@ import logging
 import os
 
 from dotenv import load_dotenv
-from fastapi import FastAPI, status
+from fastapi import Depends, FastAPI, status
 
+from parma_mining.affinity.analytics_client import AnalyticsClient
+from parma_mining.affinity.api.dependencies.auth import authenticate
 from parma_mining.affinity.client import AffinityClient
 from parma_mining.affinity.helper import collect_errors
 from parma_mining.affinity.model import (
@@ -16,7 +18,6 @@ from parma_mining.affinity.model import (
     ResponseModel,
 )
 from parma_mining.affinity.normalization_map import AffinityNormalizationMap
-from parma_mining.analytics_client import AnalyticsClient
 from parma_mining.mining_common.exceptions import AnalyticsError
 
 env = os.getenv("env", "local")
@@ -50,14 +51,14 @@ def root():
 
 
 @app.get("/all-companies", status_code=status.HTTP_200_OK)
-def get_all_companies() -> list[OrganizationModel]:
+def get_all_companies(token=Depends(authenticate)) -> list[OrganizationModel]:
     """Fetch all companies from Affiniy CRM."""
     affinity_crawler = AffinityClient(api_key, base_url)
     return affinity_crawler.get_all_companies()
 
 
 @app.get("/companies", status_code=status.HTTP_200_OK)
-def get_companies() -> list[OrganizationModel]:
+def get_companies(token=Depends(authenticate)) -> list[OrganizationModel]:
     """Fetch companies in the list from Affinity CRM.
 
     Currently (12/13/2023) fetch from Dealflow list, in future make list name a query
@@ -77,20 +78,21 @@ def get_companies() -> list[OrganizationModel]:
             source_name="affinity", company_id=str(org_details.id), raw_data=org_details
         )
         try:
-            analytics_client.feed_raw_data(data)
+            analytics_client.feed_raw_data(token, data)
         except AnalyticsError as e:
             logger.error(f"Can't send crawling data to the Analytics. Error: {e}")
             collect_errors(str(org_details.id), errors, e)
 
     return analytics_client.crawling_finished(
+        token,
         json.loads(
             CrawlingFinishedInputModel(task_id=None, errors=errors).model_dump_json()
-        )
+        ),
     )
 
 
 @app.get("/initialize", status_code=status.HTTP_200_OK)
-def initialize(source_id: int) -> str:
+def initialize(source_id: int, token=Depends(authenticate)) -> str:
     """Initialize the Affinity CRM source."""
     ## TODO: Register measurements using analytics endpoints
     ##  affinity_crawler = AffinityClient(api_key, base_url)
@@ -101,7 +103,7 @@ def initialize(source_id: int) -> str:
     normalization_map = AffinityNormalizationMap().get_normalization_map()
     # register the measurements to analytics
     analytics_client.register_measurements(
-        normalization_map, source_module_id=source_id
+        token, normalization_map, source_module_id=source_id
     )
     # set and return results
     results = {}
