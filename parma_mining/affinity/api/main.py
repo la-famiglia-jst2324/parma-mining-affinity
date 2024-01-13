@@ -8,9 +8,16 @@ from dotenv import load_dotenv
 from fastapi import FastAPI, status
 
 from parma_mining.affinity.client import AffinityClient
-from parma_mining.affinity.model import OrganizationModel, ResponseModel
+from parma_mining.affinity.helper import collect_errors
+from parma_mining.affinity.model import (
+    CrawlingFinishedInputModel,
+    ErrorInfoModel,
+    OrganizationModel,
+    ResponseModel,
+)
 from parma_mining.affinity.normalization_map import AffinityNormalizationMap
 from parma_mining.analytics_client import AnalyticsClient
+from parma_mining.mining_common.exceptions import AnalyticsError
 
 env = os.getenv("env", "local")
 
@@ -56,6 +63,7 @@ def get_companies() -> list[OrganizationModel]:
     Currently (12/13/2023) fetch from Dealflow list, in future make list name a query
     parameter
     """
+    errors: dict[str, ErrorInfoModel] = {}
     affinity_crawler = AffinityClient(api_key, base_url)
 
     lists = affinity_crawler.get_all_lists()
@@ -70,11 +78,15 @@ def get_companies() -> list[OrganizationModel]:
         )
         try:
             analytics_client.feed_raw_data(data)
-        except Exception:
-            logger.error("Can't send crawling data to the Analytics.")
-            raise Exception("Can't send crawling data to the Analytics.")
+        except AnalyticsError as e:
+            logger.error(f"Can't send crawling data to the Analytics. Error: {e}")
+            collect_errors(str(org_details.id), errors, e)
 
-    return response
+    return analytics_client.crawling_finished(
+        json.loads(
+            CrawlingFinishedInputModel(task_id=None, errors=errors).model_dump_json()
+        )
+    )
 
 
 @app.get("/initialize", status_code=status.HTTP_200_OK)
