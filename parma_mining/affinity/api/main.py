@@ -58,7 +58,7 @@ def get_all_companies(token=Depends(authenticate)) -> list[OrganizationModel]:
 
 
 @app.get("/companies", status_code=status.HTTP_200_OK)
-def get_companies(token=Depends(authenticate)) -> list[OrganizationModel]:
+def get_companies(token=Depends(authenticate)):
     """Fetch companies in the list from Affinity CRM.
 
     Currently (12/13/2023) fetch from Dealflow list, in future make list name a query
