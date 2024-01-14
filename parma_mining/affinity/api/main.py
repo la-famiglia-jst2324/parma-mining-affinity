@@ -86,7 +86,7 @@ def get_companies(token=Depends(authenticate)):
     return analytics_client.crawling_finished(
         token,
         json.loads(
-            CrawlingFinishedInputModel(task_id=None, errors=errors).model_dump_json()
+            CrawlingFinishedInputModel(task_id=0, errors=errors).model_dump_json()
         ),
     )
 
