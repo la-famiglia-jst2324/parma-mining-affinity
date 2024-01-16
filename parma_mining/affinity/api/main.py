@@ -20,7 +20,7 @@ from parma_mining.affinity.model import (
 from parma_mining.affinity.normalization_map import AffinityNormalizationMap
 from parma_mining.mining_common.exceptions import AnalyticsError
 
-env = os.getenv("env", "local")
+env = os.getenv("DEPLOYMENT_ENV", "local")
 
 if env == "prod":
     logging.basicConfig(level=logging.INFO)
