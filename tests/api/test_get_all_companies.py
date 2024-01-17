@@ -61,15 +61,3 @@ def test_get_all_companies(client: TestClient, mock_affinity_client: MagicMock):
             "domains": ["testdomains1", "testdomains2"],
         }
     ]
-
-
-"""
-def test_get_companies(
-    mock_affinity_client: MagicMock, mock_analytics_client: MagicMock
-):
-    response = client.get("/companies")
-
-    mock_analytics_client.assert_called()
-
-    assert response.status_code == 200
-"""
