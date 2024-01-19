@@ -8,7 +8,7 @@ from fastapi.testclient import TestClient
 from parma_mining.affinity.api.dependencies.auth import authenticate
 from parma_mining.affinity.api.main import app
 from parma_mining.affinity.model import AffinityListModel
-from parma_mining.mining_common.const import HTTP_200
+from parma_mining.mining_common.const import AFFINITY_LIST_ID, HTTP_200
 from tests.dependencies.mock_auth import mock_authenticate
 
 
@@ -46,9 +46,9 @@ def mock_affinity_client(mocker) -> MagicMock:
     mock_get_all_lists.return_value = [
         AffinityListModel.model_validate(
             {
-                "id": 123,
+                "id": AFFINITY_LIST_ID,  # hardcoded for now
                 "type": 123,
-                "name": "Dealflow",  # hardcoded for now
+                "name": "Parma AI - Companies to be tracked",
                 "public": True,
                 "owner_id": 123,
                 "creator_id": 123,

@@ -8,3 +8,5 @@ HTTP_404 = 404
 HTTP_405 = 405
 HTTP_422 = 422
 HTTP_500 = 500
+"""Affinity list id."""
+AFFINITY_LIST_ID = 228879

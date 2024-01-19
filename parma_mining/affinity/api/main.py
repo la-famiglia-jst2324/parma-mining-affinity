@@ -19,6 +19,7 @@ from parma_mining.affinity.model import (
     ResponseModel,
 )
 from parma_mining.affinity.normalization_map import AffinityNormalizationMap
+from parma_mining.mining_common.const import AFFINITY_LIST_ID
 from parma_mining.mining_common.exceptions import AnalyticsError
 
 env = os.getenv("DEPLOYMENT_ENV", "local")
@@ -70,11 +71,11 @@ def get_companies(body: CompaniesRequest, token=Depends(authenticate)):
 
     lists = affinity_crawler.get_all_lists()
     [dealflow] = [
-        x for x in lists if x.name == "Dealflow"
-    ]  # TODO: Make the list name a query parameter after midterm
+        x for x in lists if x.id == AFFINITY_LIST_ID
+    ]  # TODO: Make the id a parameter
 
     response = affinity_crawler.get_companies_by_list(dealflow.id)
-    for org_details in response[:50]:
+    for org_details in response:
         data = ResponseModel(
             source_name="affinity", company_id=str(org_details.id), raw_data=org_details
         )
