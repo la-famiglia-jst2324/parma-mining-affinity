@@ -77,6 +77,11 @@ def test_get_companies_success(
     mock_affinity_client: MagicMock,
     mock_analytics_client: MagicMock,
 ):
-    response = client.get("/companies")
+    payload = {
+        "task_id": 123,
+    }
+
+    headers = {"Authorization": "Bearer test"}
+    response = client.post("/companies", json=payload, headers=headers)
 
     assert response.status_code == HTTP_200

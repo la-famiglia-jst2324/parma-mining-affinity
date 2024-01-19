@@ -43,3 +43,9 @@ class CrawlingFinishedInputModel(BaseModel):
 
     task_id: int
     errors: dict[str, ErrorInfoModel] | None = None
+
+
+class CompaniesRequest(BaseModel):
+    """Base model for the companies request."""
+
+    task_id: int

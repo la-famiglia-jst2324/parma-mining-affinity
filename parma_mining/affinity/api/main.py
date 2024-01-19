@@ -12,6 +12,7 @@ from parma_mining.affinity.api.dependencies.auth import authenticate
 from parma_mining.affinity.client import AffinityClient
 from parma_mining.affinity.helper import collect_errors
 from parma_mining.affinity.model import (
+    CompaniesRequest,
     CrawlingFinishedInputModel,
     ErrorInfoModel,
     OrganizationModel,
@@ -57,8 +58,8 @@ def get_all_companies(token=Depends(authenticate)) -> list[OrganizationModel]:
     return affinity_crawler.get_all_companies()
 
 
-@app.get("/companies", status_code=status.HTTP_200_OK)
-def get_companies(token=Depends(authenticate)):
+@app.post("/companies", status_code=status.HTTP_200_OK)
+def get_companies(body: CompaniesRequest, token=Depends(authenticate)):
     """Fetch companies in the list from Affinity CRM.
 
     Currently (12/13/2023) fetch from Dealflow list, in future make list name a query
@@ -86,7 +87,9 @@ def get_companies(token=Depends(authenticate)):
     return analytics_client.crawling_finished(
         token,
         json.loads(
-            CrawlingFinishedInputModel(task_id=0, errors=errors).model_dump_json()
+            CrawlingFinishedInputModel(
+                task_id=body.task_id, errors=errors
+            ).model_dump_json()
         ),
     )
 
