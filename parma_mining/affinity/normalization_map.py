@@ -5,7 +5,7 @@ class AffinityNormalizationMap:
     """Normalization map for affinity data."""
 
     map_json = {
-        "Source": "Affinity",
+        "Source": "affinity",
         "Mappings": [
             {
                 "SourceField": "id",
