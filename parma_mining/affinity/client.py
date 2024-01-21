@@ -23,6 +23,7 @@ class AffinityClient:
             auth=BasicAuth("", self.api_key),
             headers={"Content-Type": "application/json"},
             params=params,
+            timeout=30,
         )
 
     def get_all_companies(self) -> list[OrganizationModel]:
