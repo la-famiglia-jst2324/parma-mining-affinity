@@ -66,6 +66,13 @@ resource "google_cloud_run_service" "parma_mining_affinity_cloud_run" {
         }
       }
     }
+
+    metadata {
+      annotations = {
+        "autoscaling.knative.dev/maxScale" = "10"
+      }
+    }
+
   }
 
   traffic {
