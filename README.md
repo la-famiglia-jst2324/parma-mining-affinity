@@ -31,7 +31,7 @@ The following steps will get you started with the project.
 
 4. **Start the api server**:
 
-   ```bash### Affinity API Key
+   ```bash
    make dev
    ```
 
