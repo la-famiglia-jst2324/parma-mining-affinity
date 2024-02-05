@@ -5,7 +5,7 @@
 [![Deploy](https://github.com/la-famiglia-jst2324/parma-mining-affinity/actions/workflows/release.yml/badge.svg)](https://github.com/la-famiglia-jst2324/parma-mining-affinity/actions/workflows/release.yml)
 [![Major Tag](https://github.com/la-famiglia-jst2324/parma-mining-affinity/actions/workflows/tag-major.yml/badge.svg)](https://github.com/la-famiglia-jst2324/parma-mining-affinity/actions/workflows/tag-major.yml)
 
-ParmaAI mining module for the Affinity CRM.
+ParmaAI mining module for Affinity. This module collects the companies from Affinity CRM and provides them to the parma-analytics.
 
 ## Getting Started
 
@@ -16,7 +16,6 @@ The following steps will get you started with the project.
    - Configure GitHub via an ssh key. Key based authenticated is highly encouraged. See [GitHub Docs](https://docs.github.com/en/github/authenticating-to-github/connecting-to-github-with-ssh) for more information.
    - Please make sure to have an GPG key configured for GitHub. See [GitHub Docs](https://docs.github.com/en/authentication/managing-commit-signature-verification/adding-a-gpg-key-to-your-github-account) for more information.
    - Install **micromamba**, a conda environment management package manager, as described [here](https://mamba.readthedocs.io/en/latest/micromamba-installation.html). Alternatively conda or mamba installations should also work, but are highly discouraged because of their slow performance.
-   - Install **pre-commit**, See [pre-commit installation](https://pre-commit.com/#install)
 
 2. **Clone the repository**
 
@@ -32,7 +31,7 @@ The following steps will get you started with the project.
 
 4. **Start the api server**:
 
-   ```bash
+   ```bash### Affinity API Key
    make dev
    ```
 
@@ -50,17 +49,6 @@ The following steps will get you started with the project.
 
    ```bash
    make test
-   ```
-
-   **IMPORTANT NOTE**:
-   Don't forget to add the environment variables for this repository.
-   Create a .env file in the main directory and add the secrets there. Necessary secrets/keys can be found in [Notion](https://www.notion.so/La-Famiglia-VC-86ebaf0018ca474c9478f848062191a4).
-
-   File (.env) should look like this :
-
-   ```bash
-   AFFINITY_API_KEY = "PASTE/HERE"
-   AFFINITY_BASE_URL = "PASTE/HERE"
    ```
 
 ## PR workflow
@@ -92,6 +80,7 @@ The following steps will get you started with the project.
 .
 ├── parma_mining.affinity: Main sourcing code
 │   └── api: FastAPI REST API
+│   └── mining_common: Collection of common classes to be used in the repo.
 ├─ tests: Tests for mining module
 ├── Makefile: Recipes for easy simplified setup and local development
 ├── README.md
@@ -100,7 +89,7 @@ The following steps will get you started with the project.
 └── pyproject.toml: Python project configuration file
 ```
 
-## Tech Stack
+## Tech Stack and Dependencies
 
 Core libraries that this project uses:
 
@@ -109,12 +98,88 @@ Core libraries that this project uses:
 - [Typer](https://typer.tiangolo.com/): Typer is a library for building CLI applications that users will love using and developers will love creating.
 - [Polars](https://pola.rs): Polars is a blazingly fast data processing library written in Rust. It has a DataFrame API that is similar to Pandas and a Series API that is similar to NumPy.
 - [Pytest](https://docs.pytest.org/en/6.2.x/): The pytest framework makes it easy to write small tests, yet scales to support complex functional testing for applications and libraries.
+- [Python-Jose](https://python-jose.readthedocs.io/en/latest/): The JavaScript Object Signing and Encryption (JOSE) technologies collectively can be used to encrypt and/or sign content using a variety of algorithms.
+- [HTTPX](https://www.python-httpx.org/): HTTPX is a fully featured HTTP client for Python 3, which provides sync and async APIs, and support for both HTTP/1.1 and HTTP/2.
 
 ## Deployment
 
-No deployment pipeline has been set up yet.
+The deployment of Parma Mining Modules are managed through a combination of Terraform for infrastructure management and GitHub Actions for continuous integration and delivery. Our deployment strategy ensures that our application is consistently deployed across different environments with high reliability and minimal manual intervention.
 
-Currently we are considering several backend frameworks like `Firebase`, `Supabase` or `AWS Amplify`.
+### Infrastructure as Code with Terraform
+
+We use Terraform for defining, provisioning, and managing the cloud infrastructure required for Parma Mining Modules. Our Terraform configuration files are organized under the `terraform` directory, divided into different environments like staging (`staging`), and production (`prod`). Each environment has its own set of configurations and variables, ensuring isolation and control over different deployment stages.
+
+A pivotal aspect of our Terraform strategy is the use of a common module, which is housed in the `module` directory. This module encompasses the core infrastructure components that are shared across all environments. The utilization of a shared module ensures consistency and streamlines our infrastructure management.
+
+Each environment, staging and production, references this common `module` but with its own set of environment-specific configurations and variables. This structure ensures that each environment, while based on a common foundation, is independently configurable and isolated, thus providing precise control over the deployment in various stages.
+
+The application is containerized and deployed to **Google Cloud Run**, providing a scalable and serverless environment for running our APIs. This is defined in `service.tf`.
+
+### Continuous Deployment with GitHub Actions
+
+Our GitHub Actions workflow, defined in `.github/workflows/deploy.yml`, automates the deployment process. The workflow is triggered on pushes to the main branch and on published releases. It encompasses steps for:
+
+- Setting up the Google Cloud CLI and authenticating with Google Cloud services.
+- Building and pushing Docker images to Google Container Registry.
+- Executing Terraform commands (`init`, `plan`, `apply`) to deploy the infrastructure and services as per the Terraform configurations.
+- Environment-specific variables and secrets (like database passwords, API keys, etc.) are securely managed through GitHub Secrets and are injected into the deployment process as needed.
+
+### Deployment Environments
+
+We maintain two primary environments for our application:
+
+- Staging (staging): A pre-production environment that closely resembles the production setup, used for final testing before a release.
+- Production (prod): The live environment where our application is available to end-users.
+
+## Module Interface
+
+### **Endpoint 1: Initialize**
+
+**Path: `/initialize`**
+
+**Method: GET**
+
+**Description:**
+This endpoint initializes the module, that will be done during the handshake with Parma Analytics. It introduces data format to analytics. This process includes registering the measurements which are defined in the normalization map.
+
+**Input:**
+
+- **Type**: integer
+- **Content**: Source id of the module
+
+**Output:**
+
+- **Type**: JSON response
+- **Content**: Frequency of module and the normalization map of the data format.
+
+### **Endpoint 2: Get Companies**
+
+**Path: `/companies`**
+
+**Method: POST**
+
+**Description:**
+This endpoint retrieves the list of companies and sends them to the parma-analyics to save it on database.
+
+**Input:**
+
+- **Type**: JSON body
+- **Content**: Only the task_id.
+
+**Output:**
+HTTP status OK
+
+## Additional
+
+### Affinity API Key
+
+This module requires an Affinity account and respecting API Key.
+To get the API Key please refer to [here](https://support.affinity.co/hc/en-us/articles/360032633992-How-to-obtain-your-Affinity-API-key)
+
+### Affinity List ID
+
+This module automatically fetches the companies from predefined Affinity list. List ID is hardcoded under constants.
+In any case of change or altercation of the base Affinity list, hardcoded ID also has to be updated.
 
 ## Disclaimer
 
